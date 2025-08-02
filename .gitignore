@@ -1,0 +1,27 @@
+# Node modules (both frontend and backend)
+FrontEnd/node_modules/
+Server/node_modules/
+
+# Build output
+FrontEnd/dist/
+Server/dist/
+
+# Environment files
+Server/.env
+.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# System / editor settings
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.sw?
+
+# Optional: OS-specific
+Thumbs.db
