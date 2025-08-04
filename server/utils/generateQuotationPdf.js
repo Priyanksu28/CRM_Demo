@@ -98,7 +98,7 @@ function generateQuotationPdf(quotation) {
         });
       }
 
-      doc.end();
+      doc.end(); 
     } catch (err) {
       reject(err);
     }
