@@ -1,13 +1,13 @@
 # Node modules (both frontend and backend)
-FrontEnd/node_modules/
-Server/node_modules/
+frontend/node_modules/
+server/node_modules/
 
 # Build output
-FrontEnd/dist/
-Server/dist/
+frontend/dist/
+server/dist/
 
 # Environment files
-Server/.env
+server/.env
 .env
 
 # Logs
