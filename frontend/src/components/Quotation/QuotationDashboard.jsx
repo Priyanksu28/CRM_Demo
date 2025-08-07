@@ -68,25 +68,30 @@ const QuotationDashboard = () => {
     }
   };
 
-const handleChangeToPo = async (quotationId) => {
+const handleConvertToPI = async (quotationId) => {
   try {
     const res = await axios.post(
-      `http://localhost:3000/api/quotation/${quotationId}/convert-to-po`,
+      `http://localhost:3000/api/quotation/${quotationId}/convert-to-pi`,
       {},
-      { headers: { Authorization: `Bearer ${token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    toast.success('Quotation converted to PO!');
-    navigate('/employee-dashboard/po'); 
+    toast.success('Quotation converted to Proforma Invoice!');
+    navigate('/employee-dashboard/pi'); // Redirect to PI dashboard
   } catch (error) {
     console.error('Conversion failed', error);
     if (error.response) {
       toast.error(`Failed: ${error.response?.data?.error}`);
     } else {
-      toast.error('Failed to convert to PO');
+      toast.error('Failed to convert to Proforma Invoice');
     }
   }
 };
+
 
 
 
@@ -141,10 +146,10 @@ const handleChangeToPo = async (quotationId) => {
                   Download PDF
                 </button>
                 <button
-                  onClick={() => handleChangeToPo(q._id)}
+                  onClick={() => handleConvertToPI(q._id)}
                   className="flex-1 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
                 >
-                  Covert to PI
+                  Convert to PI
                 </button>
               </div>
             </div>

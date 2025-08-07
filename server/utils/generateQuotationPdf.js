@@ -1,108 +1,96 @@
-const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
+const puppeteer = require('puppeteer');
 
-function generateQuotationPdf(quotation) {
-  return new Promise((resolve, reject) => {
-    try {
-      const doc = new PDFDocument({ size: 'A4', margin: 50 });
-      let buffers = [];
 
-      doc.on('data', buffers.push.bind(buffers));
-      doc.on('end', () => {
-        const pdfData = Buffer.concat(buffers);
-        resolve(pdfData);
-      });
+function fillTemplate(template, data) {
+  return Object.entries(data).reduce((str, [key, value]) => {
+    return str.replace(new RegExp(`{{${key}}}`, 'g'), value);
+  }, template);
+}
 
-      // Title
-      doc.fontSize(20).text('Quotation', { align: 'center' });
-      doc.moveDown();
+function renderItems(items) {
+  return items.map((item, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${item.description}</td> 
+       <td>${item.hsnSac}</td>
+      <td>${item.quantity}</td>
+      <td>${item.uom}</td>
+      <td>${item.rate}</td>
+      <td>${item.amount}</td>
+      <td>${item.taxRate}</td>
+      <td>${item.taxAmount.toFixed(2)}</td>
+      <td>${item.netAmount.toFixed(2)}</td>
+    </tr>
+  `).join('');
+}
 
-      // Basic info
-      doc.fontSize(12);
-      doc.text(`Quotation Number: ${quotation.quotationNumber}`);
-      doc.text(`Quotation Date: ${new Date(quotation.quotationDate).toLocaleDateString()}`);
-      doc.text(`Valid Until: ${quotation.validUntil ? new Date(quotation.validUntil).toLocaleDateString() : 'N/A'}`);
-      doc.moveDown();
+function numberToWords(num) {
+  return `INR ${Number(num).toFixed(2)} Only`;
+}
 
-      // Bill To info
-      doc.text('Bill To:', { underline: true });
-      doc.text(`Name: ${quotation.billTo.name}`);
-      doc.text(`GSTIN: ${quotation.billTo.gstin}`);
-      doc.text(`Address: ${quotation.billTo.address}`);
-      doc.text(`Email: ${quotation.billTo.email}`);
-      doc.text(`Phone: ${quotation.billTo.phone}`);
-      doc.text(`State: ${quotation.billTo.state}`);
-      doc.moveDown();
+async function generateQuotationPdf(quotation) {
+  const templatePath = path.join(__dirname, '../templates/quotation.html');
+  const template = fs.readFileSync(templatePath, 'utf-8');
 
-      // Ship To info
-      doc.text('Ship To:', { underline: true });
-      doc.text(`Name: ${quotation.shipTo.name}`);
-      doc.text(`GSTIN: ${quotation.shipTo.gstin}`);
-      doc.text(`Address: ${quotation.shipTo.address}`);
-      doc.text(`State: ${quotation.shipTo.state}`);
-      doc.moveDown();
+  const htmlContent = fillTemplate(template, {
+    quotationNumber: quotation.quotationNumber,
+    quotationDate: new Date(quotation.quotationDate).toLocaleDateString(),
+    dueDate: new Date(quotation.validUntil).toLocaleDateString(),
+    
+    billToName: quotation.billTo.name,
+    billToContactPersonName: quotation.billTo.contactPersonName || 'N/A',
+    billToAddress: quotation.billTo.address,
+    billToGstin: quotation.billTo.gstin,
+    billToMobile: quotation.billTo.phone || '',
+    billToEmail: quotation.billTo.email || '',
 
-      // Items table header
-      doc.text('Items:', { underline: true });
-      doc.moveDown(0.5);
+    shipToName: quotation.shipTo?.name || '',
+    shipToContactPersonName: quotation.shipTo?.contactPersonName || 'N/A',
+    shipToAddress: quotation.shipTo?.address || '',
+    shipToGstin: quotation.shipTo?.gstin || '',
+    shipToMobile: quotation.shipTo?.phone || '',
+    shipToState: quotation.shipTo?.state || '',
 
-      // Table columns
-      const tableTop = doc.y;
-      const itemX = 50;
-      const descX = 80;
-      const qtyX = 280;
-      const rateX = 330;
-      const taxX = 380;
-      const netX = 430;
+    items: renderItems(quotation.items),
 
-      doc.font('Helvetica-Bold');
-      doc.text('Sr', itemX, tableTop);
-      doc.text('Description', descX, tableTop);
-      doc.text('Qty', qtyX, tableTop);
-      doc.text('Rate', rateX, tableTop);
-      doc.text('Tax %', taxX, tableTop);
-      doc.text('Net Amount', netX, tableTop);
-      doc.moveDown();
-      doc.font('Helvetica');
+    subtotal: quotation.subtotal.toFixed(2),
+    totalTax: quotation.totalTax.toFixed(2),
+    grandTotal: quotation.grandTotal.toFixed(2),
+    freightAmount: quotation.freightAmount?.toFixed(2) || '0.00',
+    freightTaxRate: quotation.freightTaxRate?.toFixed(2) || '0.00',
+    freightTaxAmount: quotation.freightTaxAmount?.toFixed(2) || '0.00',
+    totalWithFreight: quotation.totalWithFreight?.toFixed(2) || quotation.grandTotal.toFixed(2),
+    grandTotalInWords: numberToWords(quotation.totalWithFreight || quotation.grandTotal),
 
-      // Items
-      quotation.items.forEach((item, i) => {
-        const y = tableTop + 25 + i * 20;
-        doc.text(item.srNo.toString(), itemX, y);
-        doc.text(item.description, descX, y, { width: 180 });
-        doc.text(item.quantity.toString(), qtyX, y);
-        doc.text(item.rate.toFixed(2), rateX, y);
-        doc.text(item.taxRate.toFixed(2), taxX, y);
-        doc.text(item.netAmount.toFixed(2), netX, y);
-      });
+    modeOfTransport: quotation.modeOfTransport || '',
+    warranty: quotation.warranty || '',
+    remarks: quotation.remarks || '',
+    freightPaymentType: quotation.freightPaymentType || '',
+    email: quotation.supplierDetails?.email || '',
+    mobile: quotation.supplierDetails?.phone || '',
 
-      doc.moveDown(2);
+    terms: quotation.termsAndConditions.map((term, i) => `<li>${i + 1}) ${term}</li>`).join('')
+  });
 
-      // Totals
-      doc.text(`Subtotal: ₹${quotation.subtotal.toFixed(2)}`, { align: 'right' });
-      doc.text(`Total Tax: ₹${quotation.totalTax.toFixed(2)}`, { align: 'right' });
-      doc.text(`Grand Total: ₹${quotation.grandTotal.toFixed(2)}`, { align: 'right' });
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+  const page = await browser.newPage();
+  await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-      doc.moveDown();
-
-      // Remarks & Terms
-      if (quotation.remarks) {
-        doc.text('Remarks:', { underline: true });
-        doc.text(quotation.remarks);
-        doc.moveDown();
-      }
-
-      if (quotation.termsAndConditions && quotation.termsAndConditions.length) {
-        doc.text('Terms and Conditions:', { underline: true });
-        quotation.termsAndConditions.forEach((term, idx) => {
-          doc.text(`${idx + 1}. ${term}`);
-        });
-      }
-
-      doc.end(); 
-    } catch (err) {
-      reject(err);
+  const pdfBuffer = await page.pdf({
+    format: 'A4',
+    printBackground: true,
+    margin: {
+      top: '40px',
+      bottom: '40px',
+      left: '30px',
+      right: '30px'
     }
   });
+
+  await browser.close();
+  return pdfBuffer;
 }
 
 module.exports = generateQuotationPdf;

@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const purchaseOrderSchema = new mongoose.Schema({
-  poNumber: { type: String, required: true, unique: true },
-  poDate: { type: Date, required: true },
+const proformaInvoiceSchema = new mongoose.Schema({
+  piNumber: { type: String, required: true, unique: true },
+  piDate: { type: Date, required: true },
 
-  quotationId: { type: mongoose.Schema.Types.ObjectId, ref: "Quotation", required: true },
+  quotationId: { type: mongoose.Schema.Types.ObjectId, ref: "Quotation" }, // Optional
 
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: "Customer", required: true },
 
@@ -14,11 +14,12 @@ const purchaseOrderSchema = new mongoose.Schema({
     contactPerson: String,
     phone: String,
     email: String,
-    gstin: { type: String, required: true }
+    gstin: { type: String, required: true } 
   },
 
   billTo: {
     name: { type: String, required: true },
+    contactPersonName: String,
     gstin: { type: String, required: true },
     address: { type: String, required: true },
     email: String,
@@ -28,6 +29,7 @@ const purchaseOrderSchema = new mongoose.Schema({
 
   shipTo: {
     name: { type: String, required: true },
+    contactPersonName: String,
     address: { type: String, required: true },
     gstin: String,
     state: String
@@ -52,6 +54,10 @@ const purchaseOrderSchema = new mongoose.Schema({
   deliveryDate: { type: Date },
   paymentTerms: { type: String, default: "Advance Payment" },
   freightPaymentType: { type: String, enum: ["To Pay", "Paid", "Free"], default: "To Pay" },
+  freightAmount: { type: Number, default: 0 },
+  freightTaxRate: { type: Number, default: 0 },
+  freightTaxAmount: { type: Number, default: 0 },
+  totalWithFreight: { type: Number, default: 0 },
   modeOfTransport: { type: String, default: "By Road" },
   warranty: { type: String, default: "N/A" },
 
@@ -63,17 +69,14 @@ const purchaseOrderSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["Draft", "Open", "Closed", "Invoiced", "Cancelled"],
+    enum: ["Draft", "Sent", "Accepted", "Cancelled"],
     default: "Draft"
   },
 
-//   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-//   approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   approvedDate: { type: Date },
   validUntil: { type: Date },
 
   termsAndConditions: [{ type: String }],
 }, { timestamps: true });
 
-
-module.exports = mongoose.model("PurchaseOrder", purchaseOrderSchema);
+module.exports = mongoose.model("ProformaInvoice", proformaInvoiceSchema);

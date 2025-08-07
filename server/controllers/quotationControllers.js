@@ -1,6 +1,6 @@
 const Quotation =  require('../models/Quotation.js');
 const generateQuotationPdf = require('../utils/generateQuotationPdf');
-const PurchaseOrder = require('../models/PurchaseOrder.js');
+const ProformaInvoice = require('../models/ProformaInvoice.js');
 
 // Create a new quotation
 exports.createQuotation = async (req, res) => {
@@ -16,7 +16,7 @@ exports.createQuotation = async (req, res) => {
 // Get all quotations
 exports.getAllQuotations = async (req, res) => {
   try {
-    const quotations = await Quotation.find().populate('customerId createdBy approvedBy convertedToPO');
+    const quotations = await Quotation.find().populate('customerId createdBy approvedBy convertedToPI');
     res.status(200).json(quotations);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,7 +26,7 @@ exports.getAllQuotations = async (req, res) => {
 // Get a single quotation by ID
 exports.getQuotationById = async (req, res) => {
   try {
-    const quotation = await Quotation.findById(req.params.id).populate('customerId createdBy approvedBy convertedToPO');
+    const quotation = await Quotation.findById(req.params.id).populate('customerId createdBy approvedBy convertedToPI');
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -68,7 +68,7 @@ exports.deleteQuotation = async (req, res) => {
 // Download quotation as PDF
 exports.downloadQuotationPdf = async (req, res) => {
   try {
-    const quotation = await Quotation.findById(req.params.id).populate('customerId createdBy approvedBy convertedToPO');
+    const quotation = await Quotation.findById(req.params.id).populate('customerId createdBy approvedBy convertedToPI');
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -76,12 +76,12 @@ exports.downloadQuotationPdf = async (req, res) => {
     const pdfBuffer = await generateQuotationPdf(quotation);
 
     res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=Quotation_${quotation._id}.pdf`,
-      'Content-Length': pdfBuffer.length,
-    });
+  'Content-Type': 'application/pdf',
+  'Content-Disposition': `attachment; filename=Quotation_${quotation._id}.pdf`,
+  'Content-Length': pdfBuffer.length
+});
+res.send(pdfBuffer);
 
-    res.send(pdfBuffer);
   } catch (error) {
     console.error('Error generating PDF:', error);
     res.status(500).json({ message: 'Failed to generate PDF' });
@@ -89,8 +89,8 @@ exports.downloadQuotationPdf = async (req, res) => {
 };
 
 
-// Conversion function: Converts a quotation to a PO by creating a new PO document
-exports.convertQuotationToPO = async (req, res) => {
+// Conversion function: Converts a quotation to a PI by creating a new PI document
+exports.convertQuotationToPI = async (req, res) => {
   try {
     const quotation = await Quotation.findById(req.params.id)
       .populate('customerId'); 
@@ -103,14 +103,14 @@ exports.convertQuotationToPO = async (req, res) => {
       return res.status(403).json({ error: "Quotation must be accepted/approved before converting to PO" });
     }
 
-    if (quotation.convertedToPO) {
-      return res.status(400).json({ error: "Quotation has already been converted to a PO" });
+    if (quotation.convertedToPI) {
+      return res.status(400).json({ error: "Quotation has already been converted to a PI" });
     }
 
-    const currentDate = new Date(); // Use current date for PO
-    const poData = {
-      poNumber: `PO-${quotation.quotationNumber.split('-').pop() || Date.now()}`, // Auto-generate PO number
-      poDate: currentDate,
+    const currentDate = new Date(); // Use current date for PI
+    const piData = {
+      piNumber: `PI-${quotation.quotationNumber.split('-').pop() || Date.now()}`, // Auto-generate PI number
+      piDate: currentDate,
       quotationId: quotation._id,
       customerId: quotation.customerId,
       supplierDetails: { ...quotation.supplierDetails },
@@ -120,27 +120,31 @@ exports.convertQuotationToPO = async (req, res) => {
       deliveryDate: quotation.deliveryDate,
       paymentTerms: quotation.paymentTerms,
       freightPaymentType: quotation.freightPaymentType,
+  freightAmount: quotation.freightAmount,
+  freightTaxRate: quotation.freightTaxRate,
+  freightTaxAmount: quotation.freightTaxAmount,
+  totalWithFreight: quotation.totalWithFreight,
       modeOfTransport: quotation.modeOfTransport,
       warranty: quotation.warranty,
       subtotal: quotation.subtotal,
       totalTax: quotation.totalTax,
       grandTotal: quotation.grandTotal,
       remarks: quotation.remarks,
-      status: "Open", // Initial PO status
+      // status: "Open", // Initial PO status
       //createdBy: req.user.id, // Assumes auth middleware sets req.user
       termsAndConditions: [...quotation.termsAndConditions],
       validUntil: quotation.validUntil
     };
 
-    const newPO = new PurchaseOrder(poData);
-    await newPO.save();
+    const newPI = new ProformaInvoice(piData);
+    await newPI.save();
 
     // Update quotation to mark as converted
     quotation.status = "Converted";
-    quotation.convertedToPO = newPO._id;
+    quotation.convertedToPI = newPI._id;
     await quotation.save();
 
-    res.status(201).json({ message: "Quotation successfully converted to PO", po: newPO });
+    res.status(201).json({ message: "Quotation successfully converted to PI", pi: newPI });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

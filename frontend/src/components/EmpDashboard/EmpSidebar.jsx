@@ -27,7 +27,7 @@ const EmpSidebar = () => {
           <IoPersonAdd />
           <span>Customers</span>
         </NavLink>
-        <NavLink to='/employee-dashboard/po' className='flex items-center gap-2 text-white py-2 px-4 rounded hover:bg-gray-800 transition-colors'>
+        <NavLink to='/employee-dashboard/pi' className='flex items-center gap-2 text-white py-2 px-4 rounded hover:bg-gray-800 transition-colors'>
           <BiPurchaseTag />
           <span>PI</span>
         </NavLink>

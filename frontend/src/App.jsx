@@ -13,7 +13,7 @@ import CustomerDashboard from "./components/custDashboard/CustomerDashboard";
 import AddCustomer from './components/custDashboard/AddCustomer'
 import QuotationForm from "./components/Quotation/QuotationForm";
 import QuotationDashboard from "./components/Quotation/QuotationDashboard";
-import PODashboard from "./components/PurchaseOrder/PIDashboard";
+import PIDashboard from "./components/PI/PIDashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 
@@ -60,7 +60,7 @@ const App = () => {
          <Route path="customer/create-quotation" element={<QuotationForm/>} />
          <Route path="quotation/edit/:id" element={<QuotationForm/>} />
 
-          <Route path="po" element={<PODashboard/>} />
+          <Route path="pi" element={<PIDashboard/>} />
       </Route>
 
       <Route path="*" element={<ErrorPage/>}/>

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const{createQuotation,updateQuotation,getAllQuotations,getQuotationById,deleteQuotation,downloadQuotationPdf,convertQuotationToPO} = require('../controllers/quotationControllers');
+const{createQuotation,updateQuotation,getAllQuotations,getQuotationById,deleteQuotation,downloadQuotationPdf,convertQuotationToPI} = require('../controllers/quotationControllers');
 const {isAuthenticated,isEmployee} = require('../middlewares/authMiddleware');
 
 router.use(isAuthenticated,isEmployee);
@@ -12,6 +12,6 @@ router.get('/:id/download',downloadQuotationPdf);
 router.get('/:id', getQuotationById);
 router.put('/:id', updateQuotation);
 router.delete('/:id', deleteQuotation);
-router.post('/:id/convert-to-po',convertQuotationToPO);
+router.post('/:id/convert-to-pi',convertQuotationToPI);
 
 module.exports = router;

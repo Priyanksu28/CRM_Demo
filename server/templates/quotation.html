@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QUOTATION</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 15px;
+      margin: 0;
+      padding: 0;
+      line-height: 1.3;
+      color: #333;
+      background-color: #fafafa;
+    }
+
+    .invoice-header {
+      border: 1px solid #004080;
+      border-collapse: collapse;
+      background-color: #e6f2ff;
+    }
+
+    .invoice-header td, .invoice-header th {
+      border: 1px solid #004080;
+      padding: 10px;
+      vertical-align: top;
+      color: #004080;
+    }
+
+    .invoice-title-row {
+      background-color: #0059b3 !important;
+      font-weight: bold;
+      text-align: center;
+      color: white;
+      font-size: 22px;
+      letter-spacing: 1.2px;
+    }
+
+    .company-details {
+      width: 70%;
+      font-weight: 600;
+    }
+
+    .company-logo img {
+      width: 110px;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid #004080;
+    }
+
+    .contact {
+      margin-top: 8px;
+      color: #0059b3;
+      font-weight: 500;
+    }
+
+    .footer-details {
+      border-collapse: collapse;
+      margin-top: -1px;
+      background-color: #e6f2ff;
+      border: 1px solid #004080;
+      color: #004080;
+    }
+
+    .footer-details td {
+      border: 1px solid #004080;
+      padding: 6px 10px;
+    }
+
+    .footer-details strong {
+      font-weight: 700;
+    }
+
+    .bill-section {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #004080;
+      padding: 15px;
+      margin: 20px 40px 0;
+      background-color: white;
+      box-shadow: 0 0 8px rgba(0, 64, 128, 0.15);
+      border-radius: 6px;
+    }
+
+    .bill-to, .ship-to {
+      width: 48%;
+      color: #004080;
+      font-weight: 600;
+      padding: 0 15px;
+    }
+
+    .bill-to {
+      border-right: 1px solid #004080;
+    }
+
+    .bill-to p, .ship-to p {
+      margin: 5px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 90%;
+      border-collapse: collapse;
+      margin: 25px auto 0;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+    }
+
+    th, td {
+      border: 1px solid #004080;
+      padding: 8px;
+      text-align: center;
+      color: #003366;
+    }
+
+    th {
+      background-color: #cce0ff;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .totals {
+      margin: 25px auto 0;
+      width: 90%;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+      color: #004080;
+    }
+
+    .totals td {
+      padding: 10px;
+      font-size: 15px;
+    }
+
+    .totals .label {
+      text-align: right;
+      padding-right: 20px;
+      font-weight: 700;
+      color: #00264d;
+    }
+
+    .amount-in-words {
+      margin-top: 15px;
+      font-style: italic;
+      padding: 0 40px;
+      color: #0059b3;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+     .bank-details, .terms {
+    margin-top: 16px;
+    padding: 0 40px 0 40px;
+    color: #004080;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .bank-details h4, .terms h4 {
+    margin-bottom: 6px;
+    margin-top: 0;
+    text-decoration: underline;
+    font-weight: 700;
+    color: #00264d;
+    font-size: 15px;
+  }
+  .bank-details p, .terms p, .terms ol {
+    margin: 0 0 5px 0;
+  }
+  .terms ol {
+    padding-left: 18px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .terms li {
+    margin-bottom: 2px;
+    font-size: 14px;
+  }  </style>
+</head>
+<body>
+
+  <!-- Header Table Section -->
+  <table class="invoice-header" width="100%">
+    <tr class="invoice-title-row">
+      <td colspan="4" style="background-color: #0059b3; font-weight: bold; text-align: center; color: white;">
+        QUOTATION
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" class="company-details" style="border-right: none; text-align: left;">
+        <strong>A - CLASS</strong><br>
+        GSTIN: 07DSOPS9741F1Z1<br>
+        Office No-211, 2nd Floor, Sharma Complex, Above PNB Bank, Near Sector-34 Metro Station,<br>
+        Noida, Gautam Buddha Nagar, U.P - 201301<br>
+        Company Number: 0123456789<br>
+        <div class="contact">
+          <strong>Mobile:</strong> {{mobile}}<br>
+          <strong>Email:</strong> {{email}}
+        </div>
+      </td>
+      <td class="company-logo" style="border-left: none;">
+        <img src="https://res.cloudinary.com/dvhde2jl6/image/upload/v1754382728/Crm/WhatsApp_Image_2025-06-17_at_13.13.04_2_ojqnyn.jpg" alt="Company Logo" />
+      </td>
+    </tr>
+  </table>
+
+  <!-- Invoice Metadata -->
+  <table class="footer-details" width="100%">
+    <tr>
+      <td><strong>Quotation:</strong> {{quotationNumber}}</td>
+      <td><strong>Quotation Date:</strong> {{quotationDate}}</td>
+      <td><strong>Expiry Date:</strong> {{dueDate}}</td>
+    </tr>
+  </table>
+
+  <!-- Billing & Shipping Section -->
+  <div class="bill-section">
+    <div class="bill-to">
+      <p><strong>Bill To:</strong> {{billToName}}</p>
+      <p>Contact Person: {{billToContactPersonName}}</p>
+      <p>Address: {{billToAddress}}</p>
+      <p>Mobile Number: {{billToMobile}}</p>
+      <p>GSTIN: {{billToGstin}}</p>
+    </div>
+    <div class="ship-to">
+      <p><strong>Ship To:</strong> {{shipToName}}</p>
+      <p>Contact Person: {{shipToContactPersonName}}</p>
+      <p>Address: {{shipToAddress}}</p>
+      <p>Mobile Number: {{shipToMobile}}</p>
+      <p>GSTIN: {{shipToGstin}}</p>
+    </div>
+  </div>
+
+  <!-- Item Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>S. No.</th>
+        <th>Description</th>
+        <th>HSN/SAC</th>
+        <th>Quantity</th>
+        <th>UOM</th>
+        <th>Rate</th>
+        <th>Amount</th>
+        <th>Tax Rate</th>
+        <th>Tax Amount</th>
+        <th>Net Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{items}}
+    </tbody>
+  </table>
+
+  <!-- Totals -->
+  <table class="totals">
+    <tr>
+      <td class="label">SUB-TOTAL</td>
+      <td>₹{{subtotal}}</td>
+    </tr>
+    <tr>
+      <td class="label">IGST</td>
+      <td>₹{{totalTax}}</td>
+    </tr>
+    <tr>
+      <td class="label"><strong>GRAND TOTAL</strong></td>
+      <td><strong>₹{{grandTotal}}</strong></td>
+    </tr>
+  </table>
+
+  <!-- Amount in Words -->
+  <p class="amount-in-words">Total amount (in words): INR {{grandTotalInWords}}</p>
+
+   <!-- Bank Details -->
+  <div class="bank-details">
+    <h4>Bank Details:</h4>
+    <p>Bank Name: Kotak Mahindra Bank</p>
+    <p>Account No.: 1449137951</p>
+    <p>IFSC Code: KKBK0000204</p>
+  </div>
+
+  <!-- Terms -->
+  <div class="terms">
+    <h4>Terms & Conditions:</h4>
+    <ol>
+      <li>Material delivers within 10–15 days after confirmation of PO</li>
+      <li>Payment Terms 100% Advance</li>
+      <li>Freight charges extra as actual</li>
+      {{terms}}
+    </ol>
+  </div>
+
+</body>
+</html>

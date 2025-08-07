@@ -17,13 +17,13 @@ const userRoutes = require('./routes/User');
 const adminRoutes = require('./routes/Admin');
 const customerRoutes = require('./routes/Customer');
 const quotationRoute = require('./routes/quotationRoutes');
-const poRoutes = require('./routes/po');
+const piRoutes = require('./routes/pi');
 
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/customer', customerRoutes);
 app.use('/api/quotation', quotationRoute);
-app.use('/api/po', poRoutes);
+app.use('/api/pi', piRoutes);
 db();
 
 app.listen(PORT, () => {

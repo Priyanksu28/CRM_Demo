@@ -35,13 +35,14 @@ const QuotationForm = () => {
       supplierDetails: {
         name: 'A Class',
         address: 'Noida sector 51',
-        contactPerson: '',
-        phone: '',
-        email: '',
+        contactPerson: user?.name || '',
+        phone: user?.phone || '',
+        email: user?.email || '',
         gstin: '',
       },
       billTo: {
         name: customer?.orgName || '',
+        contactPersonName: customer?.name || '',
         gstin: customer?.gstin || '',
         address: customer?.address
           ? `${customer.address.street}, ${customer.address.city}, ${customer.address.state} - ${customer.address.zip}, ${customer.address.country}`
@@ -50,7 +51,8 @@ const QuotationForm = () => {
         phone: customer?.phone || '',
         state: customer?.address?.state || '',
       },
-      shipTo: { name: '', address: '', gstin: '', state: '' },
+      shipTo: { name: '', contactPersonName: '', address: '', gstin: '', email: '',
+        phone: '', state: '' },
       items: [
         {
           srNo: 1,
@@ -192,7 +194,8 @@ const QuotationForm = () => {
         const res = await axios.post(`http://localhost:3000/api/quotation`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success('Quotation created with ID: ' + res.data._id);
+        console.log(data);
+        toast.success('Quotation created successfully!');
       }
 
       navigate('/employee-dashboard/quotation');
@@ -234,22 +237,35 @@ const QuotationForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <section>
           <h3 className="text-lg font-semibold mb-2">Bill To</h3>
-          {['name', 'gstin', 'address', 'email', 'phone', 'state'].map((field) => (
+          {['name','contactPersonName' ,'gstin', 'address', 'email', 'phone', 'state'].map((field) => (
             <input key={field} placeholder={field} {...register(`billTo.${field}`)} className="mb-2 p-2 border rounded w-full" />
           ))}
         </section>
-        <section>
-          <h3 className="text-lg font-semibold mb-2">Ship To</h3>
-          <div className="mb-2">
-            <label className="inline-flex items-center">
-              <input type="checkbox" onChange={(e) => e.target.checked && setValue('shipTo', watch('billTo'))} className="mr-2" />
-              Ship To same as Bill To
-            </label>
-          </div>
-          {['name', 'address', 'gstin', 'state'].map((field) => (
-            <input key={field} placeholder={field} {...register(`shipTo.${field}`)} className="mb-2 p-2 border rounded w-full" />
-          ))}
-        </section>
+       <section>
+  <div className="flex items-center justify-between mb-2">
+    <h3 className="text-lg font-semibold">Ship To</h3>
+    <label className="inline-flex items-center text-sm">
+      <input
+        type="checkbox"
+        onChange={(e) => {
+          if (e.target.checked) setValue('shipTo', watch('billTo'));
+        }}
+        className="mr-2"
+      />
+      Same as Bill To
+    </label>
+  </div>
+
+  {['name','contactPersonName' ,'gstin', 'address', 'email', 'phone', 'state'].map((field) => (
+    <input
+      key={field}
+      placeholder={field}
+      {...register(`shipTo.${field}`)}
+      className="mb-2 p-2 border rounded w-full"
+    />
+  ))}
+</section>
+
       </div>
 
       {/* Items Table */}

@@ -14,6 +14,7 @@ const quotationSchema = new mongoose.Schema({
   },
   billTo: {
     name: { type: String, required: true },
+    contactPersonName: String,
     gstin: { type: String, required: true },
     address: { type: String, required: true },
     email: String,
@@ -22,8 +23,11 @@ const quotationSchema = new mongoose.Schema({
   },
   shipTo: {
     name: { type: String, required: true },
+    contactPersonName: String,
     address: { type: String, required: true },
     gstin: String,
+     email: String,
+    phone: String,
     state: String
   },
   items: [
@@ -44,7 +48,11 @@ const quotationSchema = new mongoose.Schema({
   deliveryDate: { type: Date },
   paymentTerms: { type: String, default: "Advance Payment" },
   freightPaymentType: { type: String, enum: ["To Pay", "Paid", "Free"], default: "To Pay" },
-  modeOfTransport: { type: String, default: "By Road" },
+  freightAmount: { type: Number, default: 0 },
+  freightTaxRate: { type: Number, default: 0 },
+  freightTaxAmount: { type: Number, default: 0 },
+  totalWithFreight: { type: Number, default: 0 },
+  modeOfTransport: { type: String, enum: ["By Road", "By Rail", "By Air"], default: "By Road" },
   warranty: { type: String, default: "N/A" },
   subtotal: { type: Number, required: true },
   totalTax: { type: Number, required: true },
@@ -61,7 +69,7 @@ const quotationSchema = new mongoose.Schema({
   approvedDate: { type: Date },
   validUntil: { type: Date, required: true },
   termsAndConditions: [{ type: String }],
-  convertedToPO: { type: mongoose.Schema.Types.ObjectId, ref: "PurchaseOrder" }
+  convertedToPI: { type: mongoose.Schema.Types.ObjectId, ref: 'ProformaInvoice' }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Quotation",quotationSchema);

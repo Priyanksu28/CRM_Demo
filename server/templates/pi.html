@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PROFORMA INVOICE</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 15px;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      background-color: #fafafa;
+    }
+    .header, .footer-details {
+      border-collapse: collapse;
+      width: 100%;
+      background-color: #e6f2ff;
+      color: #004080;
+    }
+    .header td {
+      border: 1px solid #004080;
+      padding: 10px;
+    }
+    .header .title {
+      background: #0059b3;
+      color: #fff;
+      font-weight: bold;
+      font-size: 22px;
+      text-align: center;
+    }
+    .company-logo img {
+      width: 110px;
+      border-radius: 6px;
+      border: 1px solid #004080;
+    }
+    .bill-section {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #004080;
+      padding: 15px;
+      margin: 20px 40px 0;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(0, 64, 128, 0.15);
+      border-radius: 6px;
+    }
+    .bill-to, .ship-to {
+      width: 48%;
+      color: #004080;
+      font-weight: 600;
+      padding: 0 15px;
+    }
+    .bill-to {
+      border-right: 1px solid #004080;
+    }
+    .bill-to p, .ship-to p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    table.items {
+      width: 90%;
+      margin: 25px auto 0;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+    }
+    .items th, .items td {
+      border: 1px solid #004080;
+      padding: 8px;
+      text-align: center;
+      color: #003366;
+    }
+    .items th {
+      background-color: #cce0ff;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .totals {
+      margin: 25px auto 0;
+      width: 90%;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,.05);
+      border-radius: 6px;
+      color: #004080;
+    }
+    .totals td {
+      padding: 10px;
+      font-size: 15px;
+    }
+    .label {
+      text-align: right;
+      padding-right: 20px;
+      font-weight: 700;
+      color: #00264d;
+    }
+    .amount-in-words {
+      margin-top: 15px;
+      font-style: italic;
+      padding: 0 40px;
+      color: #0059b3;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .bank-details, .terms {
+      margin-top: 16px;
+      padding: 0 40px;
+      color: #004080;
+      font-size: 14px;
+    }
+    .bank-details h4, .terms h4 {
+      margin-bottom: 6px;
+      margin-top: 0;
+      text-decoration: underline;
+      font-weight: 700;
+      color: #00264d;
+      font-size: 15px;
+    }
+    .terms ol {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .terms li {
+      margin-bottom: 2px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <table class="header">
+    <tr>
+      <td colspan="4" class="title">PROFORMA INVOICE</td>
+    </tr>
+    <tr>
+      <td colspan="3" style="border-right: none;">
+        <strong>A-CLASS</strong><br>
+        GSTIN: 07DSOPS9741F1Z1<br>
+        Office No-211, 2nd Floor, Sharma Complex, Above PNB Bank, Near Sector-34 Metro Station,<br>
+        Noida, Gautam Buddha Nagar, U.P - 201301
+        <div class="contact">
+          <strong>Mobile:</strong> {{mobile}}<br>
+          <strong>Email:</strong> {{email}}
+        </div>
+      </td>
+      <td class="company-logo" style="border-left: none;">
+        <img src="https://res.cloudinary.com/dvhde2jl6/image/upload/v1754382728/Crm/WhatsApp_Image_2025-06-17_at_13.13.04_2_ojqnyn.jpg" alt="Company Logo" />
+      </td>
+    </tr>
+  </table>
+
+  <!-- Metadata -->
+  <table class="footer-details">
+    <tr>
+      <td><strong>PI Number:</strong> {{piNumber}}</td>
+      <td><strong>PI Date:</strong> {{piDate}}</td>
+      <td><strong>Valid Until:</strong> {{dueDate}}</td>
+    </tr>
+  </table>
+
+  <!-- Billing & Shipping -->
+  <div class="bill-section">
+    <div class="bill-to">
+      <p><strong>Bill To:</strong> {{billToName}}</p>
+      <p>Contact Person: {{billToContactPerson}}</p>
+      <p>Address: {{billToAddress}}</p>
+      <p>Mobile Number: {{billToMobile}}</p>
+      <p>GSTIN: {{billToGstin}}</p>
+    </div>
+    <div class="ship-to">
+      <p><strong>Ship To:</strong> {{shipToName}}</p>
+      <p>Contact Person: {{shipToContactPerson}}</p>
+      <p>Address: {{shipToAddress}}</p>
+      <p>Mobile Number: {{shipToMobile}}</p>
+      <p>GSTIN: {{shipToGstin}}</p>
+    </div>
+  </div>
+
+  <!-- Items Table -->
+  <table class="items">
+    <thead>
+      <tr>
+        <th>S. No.</th>
+        <th>Description</th>
+        <th>HSN/SAC</th>
+        <th>Quantity</th>
+        <th>UOM</th>
+        <th>Rate</th>
+        <th>Amount</th>
+        <th>Tax Rate</th>
+        <th>Tax Amount</th>
+        <th>Net Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{items}}
+    </tbody>
+  </table>
+
+  <!-- Totals -->
+<table class="totals">
+ <tr>
+   <td class="label">SUB-TOTAL</td>
+ <td>₹{{subtotal}}</td>
+ </tr>
+ <tr>
+  <td class="label">TOTAL TAX</td>
+  <td>₹{{totalTax}}</td>
+ </tr>
+ <tr>
+  <td class="label">FREIGHT</td>
+  <td>₹{{freightAmount}}</td>
+ </tr>
+ <tr>
+  <td class="label">FREIGHT TAX RATE</td>
+  <td>{{freightTaxRate}}%</td>
+ </tr>
+ <tr>
+  <td class="label">FREIGHT TAX AMOUNT</td>
+  <td>₹{{freightTaxAmount}}</td>
+ </tr>
+ <tr>
+  <td class="label"><strong>GRAND TOTAL</strong></td>
+  <td><strong>₹{{totalWithFreight}}</strong></td>
+ </tr>
+</table>
+
+<!-- Total In Words -->
+<p class="amount-in-words">
+ Total amount (in words): {{grandTotalInWords}}
+</p>
+
+  <!-- Bank Details -->
+  <div class="bank-details">
+    <h4>Bank Details:</h4>
+    <p>Bank Name: Kotak Mahindra Bank</p>
+    <p>Account No.: 1449137951</p>
+    <p>IFSC Code: KKBK0000204</p>
+  </div>
+
+  <!-- Terms & Conditions -->
+  <div class="terms">
+    <h4>Terms & Conditions:</h4>
+    <ol>
+      {{terms}}
+    </ol>
+  </div>
+
+  <!-- Remarks -->
+  {{remarks}}
+</body>
+</html>
