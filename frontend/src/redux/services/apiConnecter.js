@@ -8,7 +8,7 @@ export const axiosInstance = axios.create({
 // Get the token from localStorage (or Redux state)
 const token = localStorage.getItem("token");
 if (token) {
-  axiosInstance.defaults.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
+  axiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
 }
 
 export const apiConnecter = async (method, url, bodyData = null, headers = {}, params = {}) => {

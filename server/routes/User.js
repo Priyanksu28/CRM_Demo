@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const{login,signup} = require('../controllers/authControllers');
+const{login,signup, forgotPassword,resetPassword} = require('../controllers/authControllers');
 const {isAuthenticated,isAdmin, isEmployee} = require('../middlewares/authMiddleware');
 
 router.get('/admin', isAuthenticated , isAdmin, (req,res) => {
@@ -18,7 +18,10 @@ router.get('/employee', isAuthenticated , isEmployee, (req,res) => {
    })
 })
 
-//router.post('/signup', signup);
+router.post('/signup', signup);
 router.post('/login', login);
+router.post('/forgot-password', forgotPassword)
+router.post('/reset-password/:token', resetPassword);
+
 
 module.exports = router;

@@ -17,7 +17,7 @@ router.use(isAuthenticated, isAdmin);
 // Routes
 router.get('/', getAllEmployees);
 router.get('/:id', getEmployeeById);
-router.post('/', createEmployee);
+router.post('/create', createEmployee);
 router.put('/:id', updateEmployee);
 router.delete('/:id', deleteEmployee);
 

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     employeeId:{
-        type:Number,
+        type:String,
         unique:true,
         sparse:true
     },
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-    },
+    },               
     phone:{
         type:String,
         required:true,

@@ -15,7 +15,8 @@ const token = useSelector((state) => state.auth.token) || JSON.parse(localStorag
 
 const onSubmit = async (data) => {
   try {
-    const response = await axios.post("http://localhost:3000/api/admin/", data, {
+    console.log("Sending data:", data);
+    const response = await axios.post("http://localhost:3000/api/admin/create", data, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ const onSubmit = async (data) => {
           <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
           <input
             id="phone"
-            type="number"
+            type="text"
             {...register('phone', {
               required: 'Phone Number is required',
               minLength: { value: 10, message: 'Phone Number must be at least 10 digits' },

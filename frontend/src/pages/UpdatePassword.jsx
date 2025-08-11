@@ -2,10 +2,12 @@ import { useState } from "react"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { BiArrowBack } from "react-icons/bi"
 import { useDispatch, useSelector } from "react-redux"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
+import axios from "axios"
 
 function UpdatePassword() {
   const navigate = useNavigate()
+  const {token} = useParams()
   const dispatch = useDispatch()
   const location = useLocation()
   const { loading } = useSelector((state) => state.auth)
@@ -27,9 +29,16 @@ function UpdatePassword() {
   }
 
   const handleOnSubmit = (e) => {
-    e.preventDefault()
-    const token = location.pathname.split("/").at(-1)
-    dispatch()
+    e.preventDefault();
+        axios.post(`http://localhost:3000/api/user/reset-password/${token}`, {
+            password
+        }).then(response => {
+          if (response.data.status) {
+            navigate('/login');
+          }     
+        }).catch(err => {
+            console.log(err);
+        })
   }
 
   return (

@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { BiArrowBack } from "react-icons/bi"
 import { useDispatch, useSelector } from "react-redux"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "axios"
 
 // Placeholder for your actual forgot password action
 // import { forgotPassword } from "../redux/actions/authActions"
@@ -11,11 +12,20 @@ function ForgotPassword() {
   const [emailSent, setEmailSent] = useState(false)
   const dispatch = useDispatch()
   const { loading } = useSelector((state) => state.auth)
+  const navigate = useNavigate()
 
   const handleOnSubmit = (e) => {
-    e.preventDefault()
-    // Replace with actual dispatch logic
-    // dispatch(forgotPassword(email)).then(() => setEmailSent(true))
+    e.preventDefault();
+        axios.post('http://localhost:3000/api/user/forgot-password', { email }, {
+            email
+        }).then(response => {
+          if (response.data.status) {
+            alert('Password reset link sent to your email');
+            navigate('/login');
+          }     
+        }).catch(err => {
+            console.log(err);
+        })
     setEmailSent(true)
   }
 

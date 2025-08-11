@@ -25,7 +25,7 @@ const App = () => {
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword/>}/>
-      <Route path="/update-password" element={<UpdatePassword/>}/>
+      <Route path="/resetPassword/:token" element={<UpdatePassword/>}/>
       
 
       {/* Protected Admin Routes */}
