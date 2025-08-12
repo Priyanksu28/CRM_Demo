@@ -7,7 +7,7 @@ import axios from "axios"
 
 function UpdatePassword() {
   const navigate = useNavigate()
-  const {token} = useParams()
+  const {resetToken} = useParams()
   const dispatch = useDispatch()
   const location = useLocation()
   const { loading } = useSelector((state) => state.auth)
@@ -30,8 +30,8 @@ function UpdatePassword() {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log("Token from params:", token);
-        axios.post(`http://localhost:3000/api/user/reset-password/${token}`, {
+    console.log("Token from params:", resetToken);
+        axios.post(`http://localhost:3000/api/user/reset-password/${resetToken}`, {
             password
         }).then(response => {
           if (response.data.status) {

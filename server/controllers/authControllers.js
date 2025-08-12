@@ -1,4 +1,13 @@
 const User = require('../models/User');
+
+exports.listResetTokens = async (req, res) => {
+    try {
+        const users = await User.find({}, 'email resetPasswordToken resetPasswordExpires');
+        res.status(200).json({ success: true, users });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -109,7 +118,8 @@ exports.forgotPassword = async (req, res) => {
         user.resetPasswordExpires = resetTokenExpiry
         await user.save()
 
-        
+        console.log("✅ Token generated and saved:", resetToken);
+        console.log("📅 Token expiry:", new Date(resetTokenExpiry));
 
         let transporter = nodemailer.createTransport({
         service: "gmail",
@@ -128,13 +138,16 @@ exports.forgotPassword = async (req, res) => {
 
         transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
+            console.error("❌ Email sending failed:", error);
             return res.json({ status: false, message: "Error sending email" });
         } else {
-            return res.json({ status: true, message: "Password reset link sent to your email" });
+            console.log("📩 Email sent:", info.response);
+            return res.json({ status: true, message: "Password reset link sent to your email", resetToken  });
         }
         });
 
     } catch (error) {
+        console.error("Forgot Password Error:", error);
         res.status(500).json({ success: false, error: error.message })
     }
 }
@@ -142,18 +155,18 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     try {
         const { password } = req.body;
-        const { token } = req.params;
+        const { resetToken } = req.params;
 
+        console.log("Incoming token:", resetToken);
         const user = await User.findOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() }, // Token not expired
+            resetPasswordToken: resetToken,
+            resetPasswordExpires: { $gt: Date.now() }, // Token not expired
         });
-
+        console.log("User found?", user);
         if (!user) {
+            console.log("Token invalid or expired. Current time:", new Date(), "Token expiry:", user ? user.resetPasswordExpires : "N/A");
             return res.status(400).json({ success: false, error: "Invalid or expired token" });
         }
-        
-        
 
         // Update password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -161,12 +174,29 @@ exports.resetPassword = async (req, res) => {
 
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
-        
+
         await user.save();
 
         res.status(200).json({ success: true, message: "Password reset successfully" });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
-}
+};
+
+exports.verifyResetToken = async (req, res) => {
+    try {
+        const { resetToken } = req.params;
+        console.log("Verifying token:", resetToken);
+        const user = await User.findOne({
+            resetPasswordToken: resetToken,
+            resetPasswordExpires: { $gt: Date.now() },
+        });
+        if (!user) {
+            return res.status(400).json({ success: false, error: "Invalid or expired token" });
+        }
+        return res.status(200).json({ success: true, message: "Token is valid" });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
 
