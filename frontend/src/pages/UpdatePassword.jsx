@@ -30,6 +30,7 @@ function UpdatePassword() {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    console.log("Token from params:", token);
         axios.post(`http://localhost:3000/api/user/reset-password/${token}`, {
             password
         }).then(response => {
