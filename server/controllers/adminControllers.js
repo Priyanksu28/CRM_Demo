@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
+const fs = require("fs");
+const path = require("path");
 
 
 exports.createEmployee = async (req, res) => {
@@ -35,6 +37,16 @@ exports.createEmployee = async (req, res) => {
       role: "employee",
     });
 
+    const templatePath = path.join(__dirname, "../templates/email.html");
+    let htmlContent = fs.readFileSync(templatePath, "utf-8");
+
+    htmlContent = htmlContent
+      .replace(/{{name}}/g, name)
+      .replace(/{{employeeId}}/g, employeeId)
+      .replace(/{{email}}/g, email)
+      .replace(/{{password}}/g, password)
+      .replace(/{{year}}/g, new Date().getFullYear());
+
     // Send credentials email
     let transporter = nodemailer.createTransport({
       service: "gmail",
@@ -48,18 +60,7 @@ exports.createEmployee = async (req, res) => {
       from: "t06983606@gmail.com",
       to: email,
       subject: "Your Employee Account Details",
-      text: `Hello ${name},
-
-Your employee account has been created successfully.
-
-Employee ID: ${employeeId}
-Username (Email): ${email}
-Password: ${password}
-
-Login here: http://localhost:5173/login
-
-Please change your password after your first login for security purposes.
-`,
+      html: htmlContent,
     };
 
     await transporter.sendMail(mailOptions);

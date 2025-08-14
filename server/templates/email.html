@@ -1,0 +1,97 @@
+<div
+  style="
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+  "
+>
+  <div
+    style="
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    "
+  >
+    <div
+      style="
+        background: #007bff;
+        padding: 20px;
+        text-align: center;
+        color: white;
+      "
+    >
+      <div
+        style="
+          background: #007bff;
+          padding: 20px;
+          text-align: center;
+          color: white;
+        "
+      >
+        <img
+          src="https://thevinayenterprises.com/wp-content/uploads/2023/12/WhatsApp-Image-2023-12-08-at-13.33.15-1.jpeg"
+          alt="Company Logo"
+          style="
+            max-width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+          "
+        />
+        <h1 style="margin: 0; font-size: 24px">Welcome to <b>The Vinay Enterprises</b></h1>
+      </div>
+    </div>
+    <div style="padding: 20px; color: #333">
+      <p>Hi <b>{{name}}</b>,</p>
+      <p>
+        Your employee account has been created successfully. Here are your login
+        details:
+      </p>
+      <table style="width: 100%; border-collapse: collapse">
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd">
+            <b>Employee ID</b>
+          </td>
+          <td style="padding: 8px; border: 1px solid #ddd">{{employeeId}}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd"><b>Email</b></td>
+          <td style="padding: 8px; border: 1px solid #ddd">{{email}}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd"><b>Password</b></td>
+          <td style="padding: 8px; border: 1px solid #ddd">{{password}}</td>
+        </tr>
+      </table>
+      <p style="margin-top: 20px">You can log in using the link below:</p>
+      <p>
+        <a
+          href="http://localhost:5173/login"
+          style="
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+          "
+        >
+          Login Now
+        </a>
+      </p>
+      <p>Best regards,<br /><b>HR Team</b></p>
+    </div>
+    <div
+      style="
+        background: #f4f4f4;
+        padding: 10px;
+        text-align: center;
+        font-size: 12px;
+        color: #777;
+      "
+    >
+      © {{year}} Our Company. All rights reserved.
+    </div>
+  </div>
+</div>
